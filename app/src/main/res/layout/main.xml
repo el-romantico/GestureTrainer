@@ -31,9 +31,12 @@
 	<Button android:id="@+id/trainButton" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_below="@+id/gestureName"
 		android:text="Start Training" />
+	<Button android:id="@+id/recognizeButton" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_below="@+id/trainButton"
+		android:text="Start recognizing" />
 	<Button android:id="@+id/deleteTrainingSetButton"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_below="@id/gestureName" android:layout_toRightOf="@id/trainButton"
+		android:layout_below="@id/gestureName" android:layout_toRightOf="@id/recognizeButton"
 		android:text="Delete Training Set" />
 	<TextView android:id="@+id/credit" android:layout_height="fill_parent"
 		android:layout_width="fill_parent" android:layout_below="@+id/trainButton"

@@ -29,6 +29,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
+
 import el.romantico.ccaal.gestures.classifier.Distribution;
 import el.romantico.ccaal.gestures.classifier.GestureClassifier;
 import el.romantico.ccaal.gestures.classifier.featureExtraction.NormedGridExtractor;
@@ -41,7 +43,7 @@ public class GestureRecognitionService extends Service implements GestureRecorde
 	GestureClassifier classifier;
 	String activeTrainingSet;
 	String activeLearnLabel;
-	boolean isLearning, isClassifying;
+	boolean isClassifying;
 
 	Set<IGestureRecognitionListener> listeners = new HashSet<IGestureRecognitionListener>();
 
@@ -59,11 +61,6 @@ public class GestureRecognitionService extends Service implements GestureRecorde
 					}
 				}
 			}
-		}
-
-		@Override
-		public void onPushToGesture(boolean pushed) throws RemoteException {
-			recorder.onPushToGesture(pushed);
 		}
 
 		@Override
@@ -85,15 +82,22 @@ public class GestureRecognitionService extends Service implements GestureRecorde
 		public void startLearnMode(String trainingSetName, String gestureName) throws RemoteException {
 			activeTrainingSet = trainingSetName;
 			activeLearnLabel = gestureName;
-			isLearning = true;
-			// recorder.setRecordMode(GestureRecorder.RecordMode.PUSH_TO_GESTURE);
+            recorder.setRecordMode(GestureRecorder.RecordMode.MANUAL_CONTROL_START);
 		}
 
 		@Override
 		public void stopLearnMode() throws RemoteException {
-			isLearning = false;
+			recorder.setRecordMode(GestureRecorder.RecordMode.MANUAL_CONTROL_END);
+		}
 
-			// recorder.setRecordMode(GestureRecorder.RecordMode.MOTION_DETECTION);
+		@Override
+		public void startRecognizing() throws RemoteException {
+			recorder.setRecordMode(GestureRecorder.RecordMode.RECOGNITION_START);
+		}
+
+		@Override
+		public void stopRecognizing() throws RemoteException {
+			recorder.setRecordMode(GestureRecorder.RecordMode.RECOGNITION_END);
 		}
 
 		@Override
@@ -113,18 +117,12 @@ public class GestureRecognitionService extends Service implements GestureRecorde
 		public void stopClassificationMode() throws RemoteException {
 			isClassifying = false;
 			recorder.stop();
-
 		}
 
 		@Override
 		public void deleteGesture(String trainingSetName, String gestureName) throws RemoteException {
 			classifier.deleteLabel(trainingSetName, gestureName);
 			classifier.commitData();
-		}
-
-		@Override
-		public boolean isLearning() throws RemoteException {
-			return isLearning;
 		}
 
 		@Override
@@ -148,7 +146,6 @@ public class GestureRecognitionService extends Service implements GestureRecorde
 
 	@Override
 	public void onGestureRecorded(List<float[]> values) {
-		if (isLearning) {
 
 			classifier.trainData(activeTrainingSet, new Gesture(values, activeLearnLabel));
 			classifier.commitData();
@@ -161,18 +158,20 @@ public class GestureRecognitionService extends Service implements GestureRecorde
 				}
 			}
 			System.out.println("Trained");
-		} else if (isClassifying) {
-			recorder.pause(true);
-			Distribution distribution = classifier.classifySignal(activeTrainingSet, new Gesture(values, null));
-			recorder.pause(false);
-			if (distribution != null && distribution.size() > 0) {
-				for (IGestureRecognitionListener listener : listeners) {
-					try {
-						listener.onGestureRecognized(distribution);
-					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+	}
+
+	@Override
+	public void xx(List<float[]> values) {
+		recorder.pause(true);
+		Distribution distribution = classifier.classifySignal(activeTrainingSet, new Gesture(values, null));
+		recorder.pause(false);
+		if (distribution != null && distribution.size() > 0) {
+			for (IGestureRecognitionListener listener : listeners) {
+				try {
+					listener.onGestureRecognized(distribution);
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}

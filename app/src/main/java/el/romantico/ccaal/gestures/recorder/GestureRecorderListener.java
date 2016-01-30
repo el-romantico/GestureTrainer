@@ -25,4 +25,6 @@ import java.util.List;
 
 public interface GestureRecorderListener {
 	public void onGestureRecorded(List<float[]> values);
+
+	void xx(List<float[]> values);
 }

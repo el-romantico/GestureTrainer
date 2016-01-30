@@ -108,6 +108,7 @@ public class GestureTrainer extends Activity {
 		final EditText editText = (EditText) findViewById(R.id.gestureName);
 		activeTrainingSet = editText.getText().toString();
 		final Button startTrainButton = (Button) findViewById(R.id.trainButton);
+		final Button recognizeButton = (Button) findViewById(R.id.recognizeButton);
 		final Button deleteTrainingSetButton = (Button) findViewById(R.id.deleteTrainingSetButton);
 		final Button changeTrainingSetButton = (Button) findViewById(R.id.startNewSetButton);
 		final SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar1);
@@ -141,11 +142,31 @@ public class GestureTrainer extends Activity {
 			}
 		});
 
+		recognizeButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if (recognitionService != null) {
+					try {
+						if (recognizeButton.getText().equals("Start recognizing")) {
+							recognizeButton.setText("Stop recognizing");
+							recognitionService.startRecognizing();
+						} else {
+							recognizeButton.setText("Start recognizing");
+							recognitionService.stopRecognizing();
+						}
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+
 		startTrainButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (recognitionService != null) {
 					try {
-						if (!recognitionService.isLearning()) {
+						if (editText.isEnabled()) {
 							startTrainButton.setText("Stop Training");
 							editText.setEnabled(false);
 							deleteTrainingSetButton.setEnabled(false);

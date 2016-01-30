@@ -16,16 +16,16 @@ interface IGestureRecognitionService {
 	void stopLearnMode();	
 	
 	void setThreshold(float threshold);
-	
-	void onPushToGesture(boolean pushed);
 						
 	void deleteTrainingSet(String trainingSetName);
 	
 	void deleteGesture(String trainingSetName, String gestureName);
 	
 	List<String> getGestureList(String trainingSet);
-	
-	boolean isLearning();
+
+	void startRecognizing();
+
+	void stopRecognizing();
 } 
 
 
