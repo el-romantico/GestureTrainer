@@ -1,4 +1,4 @@
-package el.romantico.ccaal.gestures.classifier.featureExtraction;
+package com.elromantico.client.gestures.classifier.featureExtraction;
 
 public interface IFeatureExtractorConstCount extends IFeatureExtractor {
 	// this interface should be used for FeatureExtractor which always deliver a

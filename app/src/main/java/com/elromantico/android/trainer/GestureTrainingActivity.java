@@ -19,7 +19,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package el.romantico.android.gestureTrainer;
+package com.elromantico.android.trainer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -39,10 +39,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import el.romantico.android.gesture.R;
-import el.romantico.ccaal.gestures.GestureRecognitionListener;
-import el.romantico.ccaal.gestures.GestureRecognitionService;
-import el.romantico.ccaal.gestures.classifier.Distribution;
+import com.elromantico.android.gesture.R;
+import com.elromantico.client.gestures.GestureRecognitionListener;
+import com.elromantico.client.gestures.GestureRecognitionService;
+import com.elromantico.client.gestures.classifier.Distribution;
 
 public class GestureTrainingActivity extends Activity {
 
@@ -100,7 +100,7 @@ public class GestureTrainingActivity extends Activity {
         final TextView activeTrainingSetText = (TextView) findViewById(R.id.activeTrainingSet);
         final EditText trainingSetText = (EditText) findViewById(R.id.trainingSetName);
         final EditText editText = (EditText) findViewById(R.id.gestureName);
-        activeTrainingSet = editText.getText().toString();
+        activeTrainingSet = trainingSetText.getText().toString();
         final Button startTrainButton = (Button) findViewById(R.id.trainButton);
         final Button recognizeButton = (Button) findViewById(R.id.recognizeButton);
         final Button deleteTrainingSetButton = (Button) findViewById(R.id.deleteTrainingSetButton);

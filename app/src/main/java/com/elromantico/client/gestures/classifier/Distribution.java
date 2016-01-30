@@ -1,4 +1,4 @@
-package el.romantico.ccaal.gestures.classifier;
+package com.elromantico.client.gestures.classifier;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,8 +1,8 @@
-package el.romantico.ccaal.gestures.classifier;
+package com.elromantico.client.gestures.classifier;
 
 import java.util.ArrayList;
 
-import el.romantico.ccaal.gestures.Gesture;
+import com.elromantico.client.gestures.Gesture;
 
 public class DTWAlgorithm {
 
@@ -21,7 +21,7 @@ public class DTWAlgorithm {
 	}
 
 	static public float calcDistance(Gesture a, Gesture b) {
-		int signalDimensions = a.getValues().get(0).length;
+		int signalDimensions = a.getValues()[0].length;
 		int signal1Length = a.length();
 		int signal2Length = b.length();
 

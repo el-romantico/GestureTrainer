@@ -1,4 +1,4 @@
-package el.romantico.ccaal.gestures;
+package com.elromantico.client.gestures;
 
 import java.util.HashSet;
 import java.util.List;
@@ -9,11 +9,11 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
-import el.romantico.ccaal.gestures.classifier.Distribution;
-import el.romantico.ccaal.gestures.classifier.GestureClassifier;
-import el.romantico.ccaal.gestures.classifier.featureExtraction.NormedGridExtractor;
-import el.romantico.ccaal.gestures.recorder.GestureRecorder;
-import el.romantico.ccaal.gestures.recorder.GestureRecorderListener;
+import com.elromantico.client.gestures.classifier.Distribution;
+import com.elromantico.client.gestures.classifier.GestureClassifier;
+import com.elromantico.client.gestures.classifier.featureExtraction.NormedGridExtractor;
+import com.elromantico.client.gestures.recorder.GestureRecorder;
+import com.elromantico.client.gestures.recorder.GestureRecorderListener;
 
 public class GestureRecognitionService extends Service implements GestureRecorderListener {
 
@@ -95,7 +95,7 @@ public class GestureRecognitionService extends Service implements GestureRecorde
     }
 
     @Override
-    public void gestureTrained(List<float[]> values) {
+    public void gestureTrained(float[][] values) {
         classifier.trainData(activeTrainingSet, new Gesture(values, activeLearnLabel));
         classifier.commitData();
         for (GestureRecognitionListener listener : listeners) {
@@ -104,7 +104,7 @@ public class GestureRecognitionService extends Service implements GestureRecorde
     }
 
     @Override
-    public void gestureRecognized(List<float[]> values) {
+    public void gestureRecognized(float[][] values) {
         recorder.pause(true);
         Distribution distribution = classifier.classifySignal(activeTrainingSet, new Gesture(values, null));
         recorder.pause(false);

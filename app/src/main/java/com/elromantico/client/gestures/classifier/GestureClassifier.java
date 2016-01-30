@@ -1,4 +1,4 @@
-package el.romantico.ccaal.gestures.classifier;
+package com.elromantico.client.gestures.classifier;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,17 +9,19 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 
 import android.content.Context;
-import el.romantico.ccaal.gestures.Gesture;
-import el.romantico.ccaal.gestures.classifier.featureExtraction.IFeatureExtractor;
+import android.util.Log;
+
+import com.elromantico.client.gestures.Gesture;
+import com.elromantico.client.gestures.classifier.featureExtraction.IFeatureExtractor;
 
 public class GestureClassifier {
 
 	protected List<Gesture> trainingSet = Collections.emptyList();
 	protected IFeatureExtractor featureExtractor;
 	protected String activeTrainingSet = "";
+	private String storageDir = "storage/sdcard0";
 	private final Context context;
 
 	public GestureClassifier(IFeatureExtractor fE, Context context) {
@@ -31,7 +33,8 @@ public class GestureClassifier {
 	public boolean commitData() {
 		if (activeTrainingSet != null && activeTrainingSet != "") {
 			try {
-				FileOutputStream fos = new FileOutputStream(new File(context.getExternalFilesDir(null), activeTrainingSet + ".gst").toString());
+				Log.d("KOR", new File(storageDir, activeTrainingSet + ".gst").getAbsolutePath());
+				FileOutputStream fos = new FileOutputStream(new File(storageDir, activeTrainingSet + ".gst").toString());
 				ObjectOutputStream o = new ObjectOutputStream(fos);
 				o.writeObject(trainingSet);
 				o.close();
@@ -59,7 +62,7 @@ public class GestureClassifier {
 			FileInputStream input;
 			ObjectInputStream o;
 			try {
-				input = new FileInputStream(new File(context.getExternalFilesDir(null), activeTrainingSet + ".gst"));
+				input = new FileInputStream(new File(storageDir, activeTrainingSet + ".gst"));
 				o = new ObjectInputStream(input);
 				trainingSet = (ArrayList<Gesture>) o.readObject();
 				try {
@@ -79,8 +82,7 @@ public class GestureClassifier {
 			trainingSet = new ArrayList<Gesture>();
 		}
 
-		return context.deleteFile(activeTrainingSet + ".gst");
-
+		return new File(storageDir, activeTrainingSet + ".gst").delete();
 	}
 
 	public Distribution classifySignal(String trainingSetName, Gesture signal) {

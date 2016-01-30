@@ -1,4 +1,4 @@
-package el.romantico.ccaal.gestures;
+package com.elromantico.client.gestures;
 
 import java.io.Serializable;
 import java.util.List;
@@ -7,14 +7,14 @@ public class Gesture implements Serializable {
 
 	private static final long serialVersionUID = 7148492971634218981L;
 	private String label;
-	private List<float[]> values;
+	private float[][] values;
 
-	public Gesture(List<float[]> values, String label) {
+	public Gesture(float[][] values, String label) {
 		setValues(values);
 		setLabel(label);
 	}
 
-	public void setValues(List<float[]> values) {
+	public void setValues(float[][] values) {
 		this.values = values;
 	}
 
@@ -22,7 +22,7 @@ public class Gesture implements Serializable {
 		return label;
 	}
 
-	public List<float[]> getValues() {
+	public float[][] getValues() {
 		return values;
 	}
 
@@ -31,14 +31,14 @@ public class Gesture implements Serializable {
 	}
 
 	public float getValue(int index, int dim) {
-		return values.get(index)[dim];
+		return values[index][dim];
 	}
 
 	public void setValue(int index, int dim, float f) {
-		values.get(index)[dim] = f;
+		values[index][dim] = f;
 	}
 
 	public int length() {
-		return values.size();
+		return values.length;
 	}
 }

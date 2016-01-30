@@ -1,6 +1,6 @@
-package el.romantico.ccaal.gestures;
+package com.elromantico.client.gestures;
 
-import el.romantico.ccaal.gestures.classifier.Distribution;
+import com.elromantico.client.gestures.classifier.Distribution;
 
 public interface GestureRecognitionListener {
     void onGestureRecognized(Distribution distribution);

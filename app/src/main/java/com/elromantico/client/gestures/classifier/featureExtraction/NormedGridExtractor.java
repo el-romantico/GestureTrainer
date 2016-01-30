@@ -1,6 +1,6 @@
-package el.romantico.ccaal.gestures.classifier.featureExtraction;
+package com.elromantico.client.gestures.classifier.featureExtraction;
 
-import el.romantico.ccaal.gestures.Gesture;
+import com.elromantico.client.gestures.Gesture;
 
 public class NormedGridExtractor implements IFeatureExtractorConstCount {
 

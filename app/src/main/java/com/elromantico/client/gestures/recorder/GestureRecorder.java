@@ -1,4 +1,4 @@
-package el.romantico.ccaal.gestures.recorder;
+package com.elromantico.client.gestures.recorder;
 
 import java.util.ArrayList;
 
@@ -45,13 +45,13 @@ public class GestureRecorder implements SensorEventListener {
             break;
 		case TRAINED:
             if (gestureValues != null && gestureValues.size() != 0) {
-                listener.gestureTrained(gestureValues);
+                listener.gestureTrained(gestureValues.toArray(new float[gestureValues.size()][]));
             }
 			gestureValues = new ArrayList<float[]>();
             state = State.NO_OP;
             break;
         case RECOGNIZED:
-            listener.gestureRecognized(gestureValues);
+            listener.gestureRecognized(gestureValues.toArray(new float[gestureValues.size()][]));
             gestureValues = new ArrayList<>();
             state = State.NO_OP;
             break;
