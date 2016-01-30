@@ -1,24 +1,3 @@
-/*
- * GestureRecognitionService.java
- *
- * Created: 18.08.2011
- *
- * Copyright (C) 2011 Robert Nesselrath
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package el.romantico.ccaal.gestures;
 
 import java.util.HashSet;
@@ -27,8 +6,8 @@ import java.util.Set;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
-import android.os.RemoteException;
 
 import el.romantico.ccaal.gestures.classifier.Distribution;
 import el.romantico.ccaal.gestures.classifier.GestureClassifier;
@@ -38,139 +17,108 @@ import el.romantico.ccaal.gestures.recorder.GestureRecorderListener;
 
 public class GestureRecognitionService extends Service implements GestureRecorderListener {
 
-	GestureRecorder recorder;
-	GestureClassifier classifier;
-	String activeTrainingSet;
-	String activeLearnLabel;
+    public class GestureRecognitionServiceBinder extends Binder {
 
-	Set<IGestureRecognitionListener> listeners = new HashSet<IGestureRecognitionListener>();
+        public GestureRecognitionService getService() {
+            return GestureRecognitionService.this;
+        }
+    }
 
-	IBinder gestureRecognitionServiceStub = new IGestureRecognitionService.Stub() {
+    private final IBinder binder = new GestureRecognitionServiceBinder();
 
-		@Override
-		public void deleteTrainingSet(String trainingSetName) throws RemoteException {
-			if (classifier.deleteTrainingSet(trainingSetName)) {
-				for (IGestureRecognitionListener listener : listeners) {
-					try {
-						listener.onTrainingSetDeleted(trainingSetName);
-					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+    GestureRecorder recorder;
+    GestureClassifier classifier;
+    String activeTrainingSet;
+    String activeLearnLabel;
 
-		@Override
-		public void registerListener(IGestureRecognitionListener listener) throws RemoteException {
-			if (listener != null) {
-				listeners.add(listener);
-			}
-		}
+    Set<GestureRecognitionListener> listeners = new HashSet<>();
 
-		@Override
-		public void startClassificationMode(String trainingSetName) throws RemoteException {
-			activeTrainingSet = trainingSetName;
-			recorder.start();
-			classifier.loadTrainingSet(trainingSetName);
-		}
+    public void deleteTrainingSet(String trainingSetName) {
+        if (classifier.deleteTrainingSet(trainingSetName)) {
+            for (GestureRecognitionListener listener : listeners) {
+                listener.onTrainingSetDeleted(trainingSetName);
+            }
+        }
+    }
 
-		@Override
-		public void startLearnMode(String trainingSetName, String gestureName) throws RemoteException {
-			activeTrainingSet = trainingSetName;
-			activeLearnLabel = gestureName;
-            recorder.setState(GestureRecorder.State.TRAINING);
-		}
+    public void registerListener(GestureRecognitionListener listener) {
+        if (listener != null) {
+            listeners.add(listener);
+        }
+    }
 
-		@Override
-		public void stopLearnMode() throws RemoteException {
-			recorder.setState(GestureRecorder.State.TRAINED);
-		}
+    public void startClassificationMode(String trainingSetName) {
+        activeTrainingSet = trainingSetName;
+        recorder.start();
+        classifier.loadTrainingSet(trainingSetName);
+    }
 
-		@Override
-		public void startRecognizing() throws RemoteException {
-			recorder.setState(GestureRecorder.State.RECOGNIZING);
-		}
+    public void startLearnMode(String trainingSetName, String gestureName) {
+        activeTrainingSet = trainingSetName;
+        activeLearnLabel = gestureName;
+        recorder.setState(GestureRecorder.State.TRAINING);
+    }
 
-		@Override
-		public void stopRecognizing() throws RemoteException {
-			recorder.setState(GestureRecorder.State.RECOGNIZED);
-		}
+    public void stopLearnMode() {
+        recorder.setState(GestureRecorder.State.TRAINED);
+    }
 
-		@Override
-		public void unregisterListener(IGestureRecognitionListener listener) throws RemoteException {
-			listeners.remove(listener);
-			if (listeners.isEmpty()) {
-				stopClassificationMode();
-			}
-		}
+    public void startRecognizing() {
+        recorder.setState(GestureRecorder.State.RECOGNIZING);
+    }
 
-		@Override
-		public List<String> getGestureList(String trainingSet) throws RemoteException {
-			return classifier.getLabels(trainingSet);
-		}
+    public void stopRecognizing() {
+        recorder.setState(GestureRecorder.State.RECOGNIZED);
+    }
 
-		@Override
-		public void stopClassificationMode() throws RemoteException {
-			recorder.stop();
-		}
+    public void unregisterListener(GestureRecognitionListener listener) {
+        listeners.remove(listener);
+        if (listeners.isEmpty()) {
+            stopClassificationMode();
+        }
+    }
 
-		@Override
-		public void deleteGesture(String trainingSetName, String gestureName) throws RemoteException {
-			classifier.deleteLabel(trainingSetName, gestureName);
-			classifier.commitData();
-		}
-	};
+    public void stopClassificationMode() {
+        recorder.stop();
+    }
 
-	@Override
-	public IBinder onBind(Intent intent) {
-		recorder.registerListener(this);
-		return gestureRecognitionServiceStub;
-	}
+    public IBinder onBind(Intent intent) {
+        recorder.registerListener(this);
+        return binder;
+    }
 
-	@Override
-	public void onCreate() {
-		recorder = new GestureRecorder(this);
-		classifier = new GestureClassifier(new NormedGridExtractor(), this);
-		super.onCreate();
-	}
+    @Override
+    public void onCreate() {
+        recorder = new GestureRecorder(this);
+        classifier = new GestureClassifier(new NormedGridExtractor(), this);
+        super.onCreate();
+    }
 
-	@Override
-	public void gestureTrained(List<float[]> values) {
-			classifier.trainData(activeTrainingSet, new Gesture(values, activeLearnLabel));
-			classifier.commitData();
-			for (IGestureRecognitionListener listener : listeners) {
-				try {
-					listener.onGestureLearned(activeLearnLabel);
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			System.out.println("Trained");
-	}
+    @Override
+    public void gestureTrained(List<float[]> values) {
+        classifier.trainData(activeTrainingSet, new Gesture(values, activeLearnLabel));
+        classifier.commitData();
+        for (GestureRecognitionListener listener : listeners) {
+            listener.onGestureLearned(activeLearnLabel);
+        }
+    }
 
-	@Override
-	public void gestureRecognized(List<float[]> values) {
-		recorder.pause(true);
-		Distribution distribution = classifier.classifySignal(activeTrainingSet, new Gesture(values, null));
-		recorder.pause(false);
-		if (distribution != null && distribution.size() > 0) {
-			for (IGestureRecognitionListener listener : listeners) {
-				try {
-					listener.onGestureRecognized(distribution);
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+    @Override
+    public void gestureRecognized(List<float[]> values) {
+        recorder.pause(true);
+        Distribution distribution = classifier.classifySignal(activeTrainingSet, new Gesture(values, null));
+        recorder.pause(false);
+        if (distribution != null && distribution.size() > 0) {
+            for (GestureRecognitionListener listener : listeners) {
+                listener.onGestureRecognized(distribution);
+            }
+        }
+    }
 
-	@Override
-	public boolean onUnbind(Intent intent) {
-		recorder.unregisterListener(this);
-		return super.onUnbind(intent);
-	}
+    @Override
+    public boolean onUnbind(Intent intent) {
+        recorder.unregisterListener(this);
+        return super.onUnbind(intent);
+    }
 
 }

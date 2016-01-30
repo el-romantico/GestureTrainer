@@ -1,24 +1,3 @@
-/*
- * GestureClassifier.java
- *
- * Created: 18.08.2011
- *
- * Copyright (C) 2011 Robert Nesselrath
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package el.romantico.ccaal.gestures.classifier;
 
 import java.io.File;
@@ -96,39 +75,12 @@ public class GestureClassifier {
 	}
 
 	public boolean deleteTrainingSet(String trainingSetName) {
-		System.out.printf("Try to delete training set %s\n", trainingSetName);
 		if (activeTrainingSet != null && activeTrainingSet.equals(trainingSetName)) {
 			trainingSet = new ArrayList<Gesture>();
 		}
 
 		return context.deleteFile(activeTrainingSet + ".gst");
 
-	}
-
-	public boolean deleteLabel(String trainingSetName, String label) {
-		loadTrainingSet(trainingSetName);
-		boolean labelExisted = false;
-		ListIterator<Gesture> it = trainingSet.listIterator();
-		while (it.hasNext()) {
-			Gesture s = it.next();
-			if (s.getLabel().equals(label)) {
-				it.remove();
-				labelExisted = true;
-			}
-		}
-		return labelExisted;
-	}
-
-	public List<String> getLabels(String trainingSetName) {
-		loadTrainingSet(trainingSetName);
-		List<String> labels = new ArrayList<String>();
-
-		for (Gesture s : trainingSet) {
-			if (!labels.contains(s.getLabel())) {
-				labels.add(s.getLabel());
-			}
-		}
-		return labels;
 	}
 
 	public Distribution classifySignal(String trainingSetName, Gesture signal) {
