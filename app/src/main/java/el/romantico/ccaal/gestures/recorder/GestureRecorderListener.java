@@ -24,7 +24,8 @@ package el.romantico.ccaal.gestures.recorder;
 import java.util.List;
 
 public interface GestureRecorderListener {
-	public void onGestureRecorded(List<float[]> values);
 
-	void xx(List<float[]> values);
+	void gestureTrained(List<float[]> values);
+
+	void gestureRecognized(List<float[]> values);
 }

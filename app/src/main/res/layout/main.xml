@@ -2,16 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:focusable="true">
-	<ImageView android:layout_width="wrap_content" android:id="@+id/dfkiView"
-		android:src="@drawable/dfki" android:layout_height="wrap_content"
-		android:layout_marginBottom="40px" android:layout_marginTop="5px">
-	</ImageView>
-	<SeekBar android:id="@+id/seekBar1" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_below="@+id/dfkiView" android:layout_alignLeft="@+id/dfkiView" ></SeekBar>
 	<TextView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:text="Training Set:\t"
-		android:id="@+id/trainingSetLabel" android:layout_below="@+id/seekBar1" />
+		android:id="@+id/trainingSetLabel" />
 	<TextView android:layout_toRightOf="@+id/trainingSetLabel"
-		android:id="@+id/activeTrainingSet" android:layout_below="@+id/seekBar1"
+		android:id="@+id/activeTrainingSet"
 		android:layout_height="wrap_content" android:text="default"
 		android:layout_width="wrap_content"></TextView>
 	<EditText android:id="@+id/trainingSetName"

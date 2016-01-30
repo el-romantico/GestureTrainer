@@ -17,7 +17,6 @@
 				<action android:name="de.dfki.ccaal.gestures.GESTURE_RECOGNIZER" />
 			</intent-filter>
 		</service>
-		<activity android:name="el.romantico.android.gestureTrainer.GestureOverview"></activity>
 	</application>
 	<uses-permission android:name="android.permission.WRITE_SETTINGS"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>

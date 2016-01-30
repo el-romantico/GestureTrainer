@@ -95,32 +95,12 @@ public class GestureClassifier {
 		}
 	}
 
-	public boolean checkForLabel(String trainingSetName, String label) {
-		loadTrainingSet(trainingSetName);
-		for (Gesture s : trainingSet) {
-			if (s.getLabel().equals(label)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean checkForTrainingSet(String trainingSetName) {
-		File file = new File(trainingSetName + ".gst");
-		return file.exists();
-	}
-
 	public boolean deleteTrainingSet(String trainingSetName) {
 		System.out.printf("Try to delete training set %s\n", trainingSetName);
 		if (activeTrainingSet != null && activeTrainingSet.equals(trainingSetName)) {
 			trainingSet = new ArrayList<Gesture>();
 		}
-		// File file = new File("\\sdcard\\" + activeTrainingSet + ".gst");
-		// if (file.exists()) {
-		// file.delete();
-		// return true;
-		// }
-		// return false;
+
 		return context.deleteFile(activeTrainingSet + ".gst");
 
 	}
@@ -149,14 +129,6 @@ public class GestureClassifier {
 			}
 		}
 		return labels;
-	}
-
-	public IFeatureExtractor getFeatureExtractor() {
-		return featureExtractor;
-	}
-
-	public void setFeatureExtractor(IFeatureExtractor featureExtractor) {
-		this.featureExtractor = featureExtractor;
 	}
 
 	public Distribution classifySignal(String trainingSetName, Gesture signal) {

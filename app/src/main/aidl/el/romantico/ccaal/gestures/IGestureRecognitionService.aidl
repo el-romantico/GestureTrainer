@@ -14,11 +14,9 @@ interface IGestureRecognitionService {
 	void startLearnMode(String trainingSetName, String gestureName);
 					
 	void stopLearnMode();	
-	
-	void setThreshold(float threshold);
-						
+
 	void deleteTrainingSet(String trainingSetName);
-	
+
 	void deleteGesture(String trainingSetName, String gestureName);
 	
 	List<String> getGestureList(String trainingSet);

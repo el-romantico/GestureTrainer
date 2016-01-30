@@ -111,36 +111,6 @@ public class GestureTrainer extends Activity {
 		final Button recognizeButton = (Button) findViewById(R.id.recognizeButton);
 		final Button deleteTrainingSetButton = (Button) findViewById(R.id.deleteTrainingSetButton);
 		final Button changeTrainingSetButton = (Button) findViewById(R.id.startNewSetButton);
-		final SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar1);
-		seekBar.setVisibility(View.INVISIBLE);
-		seekBar.setMax(20);
-		seekBar.setProgress(20);
-		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-				try {
-					recognitionService.setThreshold(progress / 10.0f);
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-		});
 
 		recognizeButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -238,20 +208,6 @@ public class GestureTrainer extends Activity {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.options_menu, menu);
 		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.edit_gestures:
-			Intent editGesturesIntent = new Intent().setClass(this, GestureOverview.class);
-			editGesturesIntent.putExtra("trainingSetName", activeTrainingSet);
-			startActivity(editGesturesIntent);
-			return true;
-
-		default:
-			return false;
-		}
 	}
 
 	@Override
